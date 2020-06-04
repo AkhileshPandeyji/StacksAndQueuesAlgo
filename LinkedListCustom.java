@@ -183,55 +183,322 @@ public class LinkedListCustom {
 				}
 			}
 		}
+
+		@SuppressWarnings("unused")
+		private Node getNodeAt(int idx) {
+			Node temp = head;
+			for (int i = 0; i < idx; i++) {
+				temp = temp.next;
+			}
+			return temp;
+		}
+
+		public void reversePI() {
+			if (this.size == 0) {
+				System.out.println("List is empty");
+				return;
+			}
+			Node prev;
+			Node curr;
+			for (prev = null, curr = this.head; curr != null;) {
+				Node n = curr.next;
+				curr.next = prev;
+				prev = curr;
+				curr = n;
+			}
+			this.tail = this.head;
+			this.head = prev;
+		}
+
+		public int kthFromLast(int k) {
+			Node fast;
+			Node temp;
+			int i;
+
+			for (i = 0, fast = this.head; i < k; i++) {
+				fast = fast.next;
+			}
+
+			for (temp = this.head; fast != this.tail; fast = fast.next) {
+				temp = temp.next;
+			}
+
+			return temp.data;
+
+		}
+
+		public int mid() {
+			Node f = head;
+			Node s = head;
+
+			while (f.next != null && f.next.next != null) {
+				f = f.next.next;
+				s = s.next;
+			}
+
+			return s.data;
+		}
+
+		public static LinkedList mergeTwoSortedLists(LinkedList l1, LinkedList l2) {
+			LinkedList ml = new LinkedList();
+
+			Node one = l1.head;
+			Node two = l2.head;
+			while (one != null && two != null) {
+				if (one.data < two.data) {
+					ml.addLast(one.data);
+					one = one.next;
+				} else {
+					ml.addLast(two.data);
+					two = two.next;
+				}
+			}
+
+			while (one != null) {
+				ml.addLast(one.data);
+				one = one.next;
+			}
+
+			while (two != null) {
+				ml.addLast(two.data);
+				two = two.next;
+			}
+
+			return ml;
+		}
+
+		public static Node midNode(Node head, Node tail) {
+			Node fast = head;
+			Node slow = head;
+
+			while (fast != tail && fast.next != tail) {
+				fast = fast.next.next;
+				slow = slow.next;
+			}
+			return slow;
+		}
+
+		public static LinkedList mergeSort(Node head, Node tail) {
+
+			if (head == tail) {
+				LinkedList baseList = new LinkedList();
+				baseList.addLast(head.data);
+				return baseList;
+			}
+
+			Node mid = midNode(head, tail);
+
+			LinkedList left = mergeSort(head, mid);
+			LinkedList right = mergeSort(mid.next, tail);
+			LinkedList ml = mergeTwoSortedLists(left, right);
+			return ml;
+		}
+
+		public void removeDuplicates() {
+			LinkedList res = new LinkedList();
+
+			while (this.size() > 0) {
+				int val = this.getFirst();
+				this.removeFirst();
+
+				if (res.size() == 0 || val != res.tail.data) {
+					res.addLast(val);
+				}
+			}
+
+			this.head = res.head;
+			this.tail = res.tail;
+			this.size = res.size;
+		}
+
+		public void oddEven() {
+			LinkedList odd = new LinkedList();
+			LinkedList even = new LinkedList();
+
+			while (this.size > 0) {
+				int val = this.getFirst();
+				this.removeFirst();
+				if (val % 2 != 0) {
+					odd.addLast(val);
+				} else {
+					even.addLast(val);
+				}
+			}
+
+			while (even.size > 0) {
+				int val = even.getFirst();
+				even.removeFirst();
+				odd.addLast(val);
+			}
+
+			this.head = odd.head;
+			this.tail = odd.tail;
+			this.size = odd.size;
+		}
+
+		public void kReverse(int k) {
+			LinkedList group = new LinkedList();
+			LinkedList value = new LinkedList();
+			int i = 0;
+
+			while (this.size > 0) {
+				i = 0;
+				while (i < k && this.size > 0) {
+					int val = this.getFirst();
+					this.removeFirst();
+					group.addLast(val);
+					i++;
+				}
+				if (group.size == k) {
+					while (group.size > 0) {
+						int val = group.getLast();
+						group.removeLast();
+						value.addLast(val);
+					}
+				} else {
+					while (group.size > 0) {
+						int val = group.getFirst();
+						group.removeFirst();
+						value.addLast(val);
+					}
+				}
+			}
+
+			this.head = value.head;
+			this.tail = value.tail;
+			this.size = value.size;
+
+		}
+
+		public boolean IsPalindrome() {
+			LinkedList reverse = new LinkedList();
+			Node mid = LinkedList.midNode(this.head, this.tail);
+
+			reverse.head = mid.next;
+			reverse.tail = this.tail;
+			reverse.size = this.size / 2;
+
+			mid.next = null;
+			reverse.reversePI();
+
+			Node t1 = this.head;
+			Node t2 = reverse.head;
+
+			boolean isPalindrome = true;
+
+			while (t1 != null && t2 != null) {
+				if (t1.data == t2.data) {
+					isPalindrome = true;
+				} else {
+					isPalindrome = false;
+					break;
+				}
+				t1 = t1.next;
+				t2 = t2.next;
+			}
+
+			reverse.reversePI();
+			mid.next = reverse.head;
+			return isPalindrome;
+		}
+
+		public void fold() {
+			LinkedList ans = new LinkedList();
+			LinkedList rev = new LinkedList();
+
+			Node mid = LinkedList.midNode(this.head, this.tail);
+
+			rev.head = mid.next;
+			rev.tail = this.tail;
+			rev.size = this.size / 2;
+
+			mid.next = null;
+			rev.reversePI();
+
+			Node t1 = this.head;
+			Node t2 = rev.head;
+
+			while (t1 != null || t2 != null) {
+				if (t1 != null) {
+					ans.addLast(t1.data);
+					t1 = t1.next;
+				}
+				if (t2 != null) {
+					ans.addLast(t2.data);
+					t2 = t2.next;
+				}
+
+			}
+
+			rev.reversePI();
+			mid.next = rev.head;
+
+			this.head = ans.head;
+			this.tail = ans.tail;
+			this.size = ans.size;
+		}
+
+		public static int addTwoListsHelper(Node l1n, int plv1, Node l2n, int plv2, LinkedList ans) {
+			if (plv1 == 0 && plv2 == 0) {
+				return 0;
+			}
+			if (plv2 > plv1) {
+				int carry = addTwoListsHelper(l1n, plv1, l2n.next, plv2 - 1, ans);
+				int val = carry + l2n.data;
+				ans.addFirst(val % 10);
+				return val / 10;
+			} else if (plv1 > plv2) {
+				int carry = addTwoListsHelper(l1n.next, plv1 - 1, l2n, plv2, ans);
+				int val = carry + l1n.data;
+				ans.addFirst(val % 10);
+				return val / 10;
+			} else {
+				int carry = addTwoListsHelper(l1n.next, plv1 - 1, l2n.next, plv2 - 1, ans);
+				int val = carry + l1n.data + l2n.data;
+				ans.addFirst(val % 10);
+				return val / 10;
+			}
+		}
+
+		public static LinkedList addTwoLists(LinkedList one, LinkedList two) {
+			LinkedList ans = new LinkedList();
+			int carry = addTwoListsHelper(one.head, one.size, two.head, two.size, ans);
+			if (carry > 0) {
+				ans.addFirst(carry);
+			}
+			return ans;
+		}
 	}
 
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		LinkedList list = new LinkedList();
 
-		String str = br.readLine();
-		while (str.equals("quit") == false) {
-			if (str.startsWith("addLast")) {
-				int val = Integer.parseInt(str.split(" ")[1]);
-				list.addLast(val);
-			} else if (str.startsWith("size")) {
-				System.out.println(list.size());
-			} else if (str.startsWith("display")) {
-				list.display();
-			} else if (str.startsWith("removeFirst")) {
-				list.removeFirst();
-			} else if (str.startsWith("getFirst")) {
-				int val = list.getFirst();
-				if (val != -1) {
-					System.out.println(val);
-				}
-			} else if (str.startsWith("getLast")) {
-				int val = list.getLast();
-				if (val != -1) {
-					System.out.println(val);
-				}
-			} else if (str.startsWith("getAt")) {
-				int idx = Integer.parseInt(str.split(" ")[1]);
-				int val = list.getAt(idx);
-				if (val != -1) {
-					System.out.println(val);
-				}
-			} else if (str.startsWith("addFirst")) {
-				int val = Integer.parseInt(str.split(" ")[1]);
-				list.addFirst(val);
-			} else if (str.startsWith("addAt")) {
-				int idx = Integer.parseInt(str.split(" ")[1]);
-				int val = Integer.parseInt(str.split(" ")[2]);
-				list.addAt(idx, val);
-			} else if (str.startsWith("removeLast")) {
-				list.removeLast();
-			} else if (str.startsWith("removeAt")) {
-				int idx = Integer.parseInt(str.split(" ")[1]);
-				list.removeAt(idx);
-			} else if (str.startsWith("reverseDI")) {
-				list.reverseDI();
-			}
-			str = br.readLine();
-		}
+	    int n1 = Integer.parseInt(br.readLine());
+	    LinkedList l1 = new LinkedList();
+	    String[] values1 = br.readLine().split(" ");
+	    for (int i = 0; i < n1; i++) {
+	      int d = Integer.parseInt(values1[i]);
+	      l1.addLast(d);
+	    }
+
+	    int n2 = Integer.parseInt(br.readLine());
+	    LinkedList l2 = new LinkedList();
+	    String[] values2 = br.readLine().split(" ");
+	    for (int i = 0; i < n2; i++) {
+	      int d = Integer.parseInt(values2[i]);
+	      l2.addLast(d);
+	    }
+
+	    LinkedList sum = LinkedList.addTwoLists(l1, l2);
+
+	    int a = Integer.parseInt(br.readLine());
+	    int b = Integer.parseInt(br.readLine());
+
+	    l1.display();
+	    l2.display();
+	    sum.display();
+	    sum.addFirst(a);
+	    sum.addLast(b);
+	    sum.display();
 	}
 }
